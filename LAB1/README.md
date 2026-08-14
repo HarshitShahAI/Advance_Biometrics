@@ -111,63 +111,50 @@ A lower EER indicates better authentication performance, while a higher decidabi
 
 ---
 
-## 4. Euclidean Distance
+## 4. Genuine Distribution
 
-Euclidean distance is just the straight-line distance between two vectors:
+The genuine distribution is built from the 500 genuine comparisons — each test sample matched against its own user's template. A tightly clustered genuine distribution, sitting clearly apart from the imposter scores, is a sign of a well-behaved system.
 
-```
-d(x, y) = √( Σ (xᵢ − yᵢ)² )
-```
-
-Smaller distance = closer match. Larger distance = worse match.
-
-**Results:**
+**Euclidean Distance — Genuine Scores**
 
 | Metric | Value |
 |---|---:|
-| Genuine Mean | 291.616047 |
-| Imposter Mean | 703.822776 |
-| Genuine Std | 135.595397 |
-| Imposter Std | 301.794848 |
-| EER Threshold | 429.225434 |
-| EER | **11.5556%** |
-| Decidability Index | **1.761935** |
+| Mean | 291.616047 |
+| Std | 135.595397 |
 
-Genuine comparisons average around 291.6, well below the imposter average of about 703.8 — so there's clearly some separation happening. It's not a clean split, though; the two distributions still overlap enough to produce an EER of roughly 11.56%.
+Genuine distances average around 291.6, which is exactly what's expected — a test sample should sit fairly close to its own template. The spread (std ≈ 135.6) shows there's still some natural variation across users and samples.
 
----
-
-## 5. Cosine Similarity
-
-Cosine similarity looks at the angle between two vectors rather than the distance between them:
-
-```
-cos(x, y) = (x · y) / (‖x‖ ‖y‖)
-```
-
-Since this library returns cosine distance, it's flipped into similarity:
-
-```python
-cosine_similarity = 1 - cosine_distance
-```
-
-Higher similarity = better match. Lower similarity = worse match.
-
-**Results:**
+**Cosine Similarity — Genuine Scores**
 
 | Metric | Value |
 |---|---:|
-| Genuine Mean | 0.989501 |
-| Imposter Mean | 0.960376 |
-| Genuine Std | 0.010968 |
-| Imposter Std | 0.018367 |
-| EER Threshold | 0.978941 |
-| EER | **8.4616%** |
-| Decidability Index | **1.925414** |
+| Mean | 0.989501 |
+| Std | 0.010968 |
 
-Genuine scores sit close to 0.99, imposter scores average around 0.96. The gap looks small on paper, but that's just because cosine similarity operates on a 0–1 scale — comparing raw means across the two metrics doesn't mean much. What actually matters is EER and decidability, covered next.
-
+Genuine cosine scores cluster tightly near 1 (mean ≈ 0.9895), with a very small standard deviation (≈ 0.011) — meaning genuine matches are consistently high-confidence across nearly all users.
 ---
+
+## 5. Imposter Distribution
+
+The imposter distribution is built from all 49,500 imposter comparisons — every test sample matched against every other user's template. Ideally, this distribution sits far away from the genuine one, with minimal overlap.
+
+**Euclidean Distance — Imposter Scores**
+
+| Metric | Value |
+|---|---:|
+| Mean | 703.822776 |
+| Std | 301.794848 |
+
+Imposter distances average around 703.8 — well above the genuine mean of 291.6 — confirming there's clear separation. The wider spread (std ≈ 301.8) reflects the huge variety of user-pairings being compared.
+
+**Cosine Similarity — Imposter Scores**
+
+| Metric | Value |
+|---|---:|
+| Mean | 0.960376 |
+| Std | 0.018367 |
+
+Imposter similarity averages around 0.960, noticeably lower than the genuine mean of 0.9895. The gap looks small in absolute terms, but that's simply because cosine similarity operates on a compressed 0–1 scale — the relative separation (captured properly by EER and d′ later) is what actually matters.
 
 ## 6. FAR — False Accept Rate
 
