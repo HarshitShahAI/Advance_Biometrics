@@ -1,10 +1,9 @@
 # Advanced Biometric Systems and Security (AI461)
-
 ## Assignment 1 – User Authentication using Biometric Features
 
-**Student:** U23AI075  
-**Course:** Advanced Biometric Systems and Security (AI461)  
-**Assignment:** Assignment 1  
+**Student:** U23AI075
+**Course:** Advanced Biometric Systems and Security (AI461)
+**Assignment:** Assignment 1
 **Dataset:** `biomet_data.csv`
 
 ---
@@ -21,467 +20,265 @@ The dataset contains:
 
 For every user:
 
-- First 5 samples are used for enrollment/training.
+- First 5 samples are used for enrollment.
 - Remaining 5 samples are used for testing.
 
 A representative biometric template is generated for every user by taking the mean of their 5 enrollment feature vectors.
 
-Each test sample is then compared with all 100 user templates using:
+Each test sample is compared with all 100 user templates using:
 
 1. Euclidean Distance
 2. Cosine Similarity
 
-The resulting genuine and impostor scores are used to evaluate the biometric system.
+The resulting genuine and impostor scores are used to evaluate the biometric authentication system.
 
 ---
 
-# 2. Experimental Setup
+## 2. Experimental Setup
 
 ### Dataset
 
-| Parameter            |  Value |
-| -------------------- | -----: |
-| Number of users      |    100 |
-| Samples per user     |     10 |
-| Enrollment samples   |      5 |
-| Test samples         |      5 |
-| Features per sample  |    144 |
-| Total samples        |   1000 |
-| Genuine comparisons  |    500 |
+| Parameter | Value |
+|---|---:|
+| Number of users | 100 |
+| Samples per user | 10 |
+| Enrollment samples per user | 5 |
+| Test samples per user | 5 |
+| Features per sample | 144 |
+| Total samples | 1000 |
+| Genuine comparisons | 500 |
 | Impostor comparisons | 49,500 |
 
-For every test sample, one comparison is made with the correct user's template and 99 comparisons are made with other users' templates.
+The program produced the following data shapes:
+
+```
+Raw data shape: (144, 1000)
+Final data shape: (1000, 144)
+
+Enrollment shape: (100, 5, 144)
+Test shape: (100, 5, 144)
+
+Templates shape: (100, 144)
+```
+
+For every test sample:
+
+- 1 comparison is made with the correct user's template.
+- 99 comparisons are made with other users' templates.
 
 Therefore:
 
-```text
-Genuine comparisons  = 100 × 5 = 500
+```
+Genuine comparisons  = 100 × 5
+                     = 500
 
-Impostor comparisons = 100 × 5 × 99 = 49,500
-
+Impostor comparisons = 100 × 5 × 99
+                     = 49,500
 ```
 
 ---
 
-# 3. Evaluation Metrics
+## 3. Evaluation Metrics
 
 The biometric system is evaluated using the following:
 
-### A. Genuine Distribution
-
+**A. Genuine Distribution**
 The distribution of matching scores obtained when a test sample is compared with the template belonging to the same user.
 
-### B. Impostor Distribution
-
+**B. Impostor Distribution**
 The distribution of matching scores obtained when a test sample is compared with templates belonging to other users.
 
-### C. FAR Plot
+**C. FAR Plot**
+False Acceptance Rate (FAR) measures the percentage of impostor attempts that are incorrectly accepted.
 
-False Acceptance Rate (FAR) measures the probability that an impostor is incorrectly accepted as a genuine user.
+**D. FRR Plot**
+False Rejection Rate (FRR) measures the percentage of genuine attempts that are incorrectly rejected.
 
-### D. FRR Plot
-
-False Rejection Rate (FRR) measures the probability that a genuine user is incorrectly rejected.
-
-### E. Receiver Operating Characteristic (ROC)
-
-The ROC curve represents the relationship between:
-
+**E. Receiver Operating Characteristic (ROC)**
+The ROC curve shows the relationship between:
 - False Acceptance Rate (FAR)
 - True Acceptance Rate (TAR)
 
-The Area Under the ROC Curve (AUC) is also reported.
+The Area Under the ROC Curve (AUC) is also calculated.
 
-### F. Equal Error Rate and Decidability Index
-
-Two important summary measures are calculated:
-
+**F. Equal Error Rate and Decidability Index**
+The following summary measures are calculated:
 - Equal Error Rate (EER)
-- Decidability Index (`d'`)
+- EER score/threshold
+- Decidability Index (d')
 
-A lower EER and higher decidability index indicate better biometric separation.
-
----
-
-# 4. A. Genuine Distribution
-
-The genuine distribution is generated using the 500 genuine comparisons.
-
-For Euclidean distance:
-
-- Smaller distance indicates greater similarity.
-- A genuine comparison is expected to have a relatively small distance.
-
-For cosine similarity:
-
-- Larger similarity indicates greater similarity.
-- A genuine comparison is expected to have a relatively high similarity score.
-
-The genuine distribution is plotted together with the impostor distribution to observe the amount of overlap between the two classes.
-
-### Euclidean Genuine Distribution
-
-The obtained Euclidean genuine scores have:
-
-```
-Mean       = 291.616047
-Std        = 135.595397
-Minimum    = 95.992907
-Maximum    = 1018.381952
-
-```
-
-The distribution is concentrated at relatively lower Euclidean distances compared with the impostor distribution.
-
-### Cosine Genuine Distribution
-
-The corresponding genuine cosine similarity distribution is generated by the program and saved in the `results` directory.
+A lower EER indicates better authentication performance, while a higher decidability index indicates better separation between genuine and impostor distributions.
 
 ---
 
-# 5. B. Impostor Distribution
+## 4. Euclidean Distance
 
-The impostor distribution is generated using all 49,500 impostor comparisons.
-
-For Euclidean distance, impostor comparisons generally produce larger distances than genuine comparisons.
-
-For cosine similarity, impostor comparisons generally produce lower similarity values than genuine comparisons.
-
-### Euclidean Impostor Distribution
-
-The obtained Euclidean impostor scores have:
+Euclidean distance is just the straight-line distance between two vectors:
 
 ```
-Mean       = 703.822776
-Std        = 301.794848
-Minimum    = 215.255317
-Maximum    = 2274.138206
-
+d(x, y) = √( Σ (xᵢ − yᵢ)² )
 ```
 
-The genuine and impostor distributions show separation, although some overlap exists.
+Smaller distance = closer match. Larger distance = worse match.
 
-The overlap between genuine and impostor distributions is important because it directly affects authentication errors.
+**Results:**
 
-### Cosine Impostor Distribution
+| Metric | Value |
+|---|---:|
+| Genuine Mean | 291.616047 |
+| Imposter Mean | 703.822776 |
+| Genuine Std | 135.595397 |
+| Imposter Std | 301.794848 |
+| EER Threshold | 429.225434 |
+| EER | **11.5556%** |
+| Decidability Index | **1.761935** |
 
-The corresponding impostor cosine similarity distribution is generated by the program and saved in the `results` directory.
+Genuine comparisons average around 291.6, well below the imposter average of about 703.8 — so there's clearly some separation happening. It's not a clean split, though; the two distributions still overlap enough to produce an EER of roughly 11.56%.
 
 ---
 
-# 6. Distribution Comparison
+## 5. Cosine Similarity
 
-The genuine and impostor distributions are used to visually evaluate the biometric system.
-
-A good biometric authentication system should have:
-
-- Genuine scores concentrated in the genuine region.
-- Impostor scores concentrated in the impostor region.
-- Minimum overlap between the two distributions.
-
-The amount of overlap determines how difficult it is to select a threshold that simultaneously gives low FAR and low FRR.
-
-The generated distribution plots are stored in:
+Cosine similarity looks at the angle between two vectors rather than the distance between them:
 
 ```
-results/
-
+cos(x, y) = (x · y) / (‖x‖ ‖y‖)
 ```
+
+Since this library returns cosine distance, it's flipped into similarity:
+
+```python
+cosine_similarity = 1 - cosine_distance
+```
+
+Higher similarity = better match. Lower similarity = worse match.
+
+**Results:**
+
+| Metric | Value |
+|---|---:|
+| Genuine Mean | 0.989501 |
+| Imposter Mean | 0.960376 |
+| Genuine Std | 0.010968 |
+| Imposter Std | 0.018367 |
+| EER Threshold | 0.978941 |
+| EER | **8.4616%** |
+| Decidability Index | **1.925414** |
+
+Genuine scores sit close to 0.99, imposter scores average around 0.96. The gap looks small on paper, but that's just because cosine similarity operates on a 0–1 scale — comparing raw means across the two metrics doesn't mean much. What actually matters is EER and decidability, covered next.
 
 ---
 
-# 7. C. FAR Plot
+## 6. FAR — False Accept Rate
 
-False Acceptance Rate is calculated for different authentication thresholds.
-
-For Euclidean distance:
+FAR is how often an imposter accidentally gets accepted as genuine.
 
 ```
-Accept if:
-
-distance <= threshold
-
+Euclidean: FAR = P(Imposter Distance ≤ Threshold)
+Cosine:    FAR = P(Imposter Similarity ≥ Threshold)
 ```
 
-For cosine similarity:
-
-```
-Accept if:
-
-similarity >= threshold
-
-```
-
-FAR is calculated as:
-
-```
-FAR = False Acceptances / Total Impostor Comparisons
-
-```
-
-The FAR curve shows how the false acceptance rate changes as the authentication threshold is varied.
-
-The generated plots are:
-
-```
-euclidean_distance_far_frr.png
-cosine_similarity_far_frr.png
-
-```
+Lower FAR means better security — fewer intruders sneaking through.
 
 ---
 
-# 8. D. FRR Plot
+## 7. FRR — False Reject Rate
 
-False Rejection Rate measures the percentage of genuine attempts that are incorrectly rejected.
-
-It is calculated as:
+FRR is how often a genuine user gets wrongly turned away.
 
 ```
-FRR = False Rejections / Total Genuine Comparisons
-
+Euclidean: FRR = P(Genuine Distance > Threshold)
+Cosine:    FRR = P(Genuine Similarity < Threshold)
 ```
 
-The FAR and FRR curves are plotted together against the decision threshold.
-
-The intersection of the two curves provides an approximate indication of the Equal Error Rate.
-
-The generated plots are stored in the `results` directory.
+Lower FRR means a smoother experience for legitimate users — fewer unnecessary rejections.
 
 ---
 
-# 9. E. Receiver Operating Characteristic (ROC)
-
-The ROC curve is generated by treating the matching scores as a binary classification problem:
-
-```
-Genuine    → Positive class
-Impostor   → Negative class
-
-```
-
-For Euclidean distance, the distance is converted into a score where a higher value represents a more genuine match.
-
-For cosine similarity, the similarity score can be directly used because higher similarity indicates a better match.
+## 8. ROC Curve
 
 The ROC curve plots:
 
 ```
-Y-axis → True Acceptance Rate (TAR)
-X-axis → False Acceptance Rate (FAR)
-
+X-axis → False Accept Rate (FAR)
+Y-axis → Genuine Accept Rate (GAR), where GAR = 1 − FRR
 ```
 
-The Area Under the Curve (AUC) is also calculated.
-
-A ROC curve closer to the upper-left corner indicates better authentication performance.
-
-An AUC closer to 1 indicates better separation between genuine and impostor comparisons.
-
-Generated ROC plots:
-
-```
-euclidean_distance_roc.png
-cosine_similarity_roc.png
-
-```
+The closer the curve sits to the top-left corner, the better the system is at telling genuine and imposter attempts apart. Comparing the Euclidean and cosine ROC curves side by side gives a visual sense of which one discriminates better overall.
 
 ---
 
-# 10. F. Equal Error Rate (EER)
+## 9. Equal Error Rate (EER)
 
-Equal Error Rate is the point at which:
+EER is the point where FAR and FRR are roughly equal — a single number that sums up how balanced (and how accurate) the system is. Lower is better.
 
-[text](U23AI075_ABSS_LAB1.ipynb)text
-FAR ≈ FRR
-
-The EER provides a single measure of biometric authentication performance.
-
-A lower EER indicates better performance because it means that the system can achieve a lower error rate at the point where false acceptance and false rejection are approximately equal.
-
-Euclidean Distance
-
-The obtained result is:
-
-EER = 11.5556%
-
-The corresponding decidability index is:
-
-Decidability Index (d') = 1.761935
-Cosine Similarity
-
-The obtained result is:
-
-EER = 8.4616%
-
-The corresponding decidability index is:
-
-Decidability Index (d') = 1.925414
-
-The comparison is:
-
+```
 Euclidean EER = 11.5556%
-Cosine EER = 8.4616%
+Cosine EER    = 8.4616%
+```
 
-Since a lower EER indicates better authentication performance, cosine similarity performs better than Euclidean distance according to EER.
+Cosine similarity comes out ahead by about 3.09 percentage points, meaning it hits a better balance between letting genuine users in and keeping imposters out.
 
-# 11. Decidability Index
+---
 
-The decidability index (d') measures how well the genuine and impostor score distributions are separated.
+## 10. Decidability Index
 
-It is calculated using the means and standard deviations of the two distributions.
+This measures how cleanly the genuine and imposter distributions are separated from each other:
 
-The interpretation is:
+```
+        |μg − μi|
+d' = ─────────────────
+     √[ (σg² + σi²) / 2 ]
+```
 
-Higher d' → Better separation
-Lower d' → More overlap
-Euclidean Distance
+where μg and μi are the genuine and imposter means, and σg and σi are their standard deviations. Basically — a bigger gap between the two means, combined with tighter (less spread-out) distributions, pushes d′ higher.
 
-The obtained decidability index is:
-
-d' = 1.761935
-Cosine Similarity
-
-The obtained decidability index is:
-
-d' = 1.925414
-
-The comparison is:
-
+```
 Euclidean d' = 1.761935
-Cosine d' = 1.925414
+Cosine d'    = 1.925414
+```
 
-Since a higher decidability index indicates better separation between genuine and impostor distributions, cosine similarity provides better distribution separation than Euclidean distance for this dataset.
-
-# 12. Comparison of Matching Criteria
-
-Both Euclidean distance and cosine similarity are evaluated using the same
-enrollment and test data.
-
-The performance is compared using:
-
-- Genuine and impostor score distributions
-- FAR
-- FRR
-- ROC-AUC
-- EER
-- Decidability Index (`d'`)
-
-The following results were obtained.
-
-| Metric                    | Euclidean Distance | Cosine Similarity |
-| ------------------------- | -----------------: | ----------------: |
-| Genuine Mean              |         291.616047 |          0.989501 |
-| Genuine Std               |         135.595397 |          0.010968 |
-| Genuine Minimum           |          95.992907 |          0.828855 |
-| Genuine Maximum           |        1018.381952 |          0.998507 |
-| Impostor Mean             |         703.822776 |          0.960376 |
-| Impostor Std              |         301.794848 |          0.018367 |
-| Impostor Minimum          |         215.255317 |          0.820040 |
-| Impostor Maximum          |        2274.138206 |          0.991292 |
-| EER                       |           11.5556% |           8.4616% |
-| Decidability Index (`d'`) |           1.761935 |          1.925414 |
-| ROC-AUC                   |           0.949556 |          0.968943 |
-
-### Performance Interpretation
-
-For EER:
-
-```text
-Euclidean = 11.5556%
-Cosine    = 8.4616%
+Higher is better here too, and cosine similarity wins again — its genuine and imposter scores are more distinctly separated.
 
 ---
 
-# 13. Output Files
+## 11. Final Comparison
 
-The program generates the following files inside the `results` directory:
+| Metric | Euclidean Distance | Cosine Similarity | Better |
+|---|---:|---:|---|
+| Genuine Mean | 291.616047 | 0.989501 | — |
+| Imposter Mean | 703.822776 | 0.960376 | — |
+| EER | **11.5556%** | **8.4616%** | **Cosine** |
+| Decidability (d′) | **1.761935** | **1.925414** | **Cosine** |
+| ROC-AUC | 0.949556 | 0.968943 | **Cosine** |
 
-```
-
-results/
-│
-├── scores.csv
-│
-├── euclidean_distance_distribution.png
-├── euclidean_distance_far_frr.png
-├── euclidean_distance_roc.png
-│
-├── cosine_similarity_distribution.png
-├── cosine_similarity_far_frr.png
-└── cosine_similarity_roc.png
+The raw means can't really be compared directly since Euclidean distance and cosine similarity sit on completely different scales. What matters is the pattern below:
 
 ```
-
-### `scores.csv`
-
-This file contains the generated matching scores for:
-
-- Genuine Euclidean comparisons
-- Impostor Euclidean comparisons
-- Genuine Cosine comparisons
-- Impostor Cosine comparisons
+                    Euclidean       Cosine
+EER                  11.56%          8.46%
+d'                    1.762          1.925
+ROC-AUC               0.9496         0.9689
+```
 
 ---
 
-# 14. Conclusion
+## 12. Which Matching Criterion Performs Best?
 
-The biometric authentication system was evaluated using two matching criteria: Euclidean distance and cosine similarity.
+Cosine similarity comes out ahead, and by a fair margin. Here's why:
 
-The evaluation includes:
+**1. Lower EER** — 11.56% for Euclidean vs. 8.46% for cosine. Fewer overall errors at the point where the system is most balanced.
 
-1. Genuine score distribution
-2. Impostor score distribution
-3. FAR
-4. FRR
-5. ROC and AUC
-6. EER
-7. Decidability Index
+**2. Higher decidability** — 1.76 vs. 1.93. Genuine and imposter scores are more clearly separated, leaving less room for confusion.
 
-The distributions, FAR/FRR curves and ROC curves provide a visual evaluation of the authentication system, while EER and decidability index provide quantitative measures of performance.
-
-The better matching criterion should be selected based on:
-
-- Lower EER
-- Higher ROC-AUC
-- Higher decidability index
-- Lower overlap between genuine and impostor distributions
+**3. Better discrimination by design** — cosine similarity cares about the direction of a feature vector rather than its raw magnitude, which tends to suit biometric data well, since a lot of the meaningful signal lives in the pattern/direction of the features rather than their scale.
 
 ---
 
-# 15. How to Run
+## Conclusion
 
-Install the required Python packages:
+Between the two, cosine similarity is the better matching criterion for this biometric recognition system. It posted a lower EER (8.4616% vs. 11.5556%), a higher decidability index (1.925414 vs. 1.761935), and a higher ROC-AUC (0.968943 vs. 0.949556) — all three pointing the same direction.
 
-```
+Since a good biometric system is one with a low EER and a high decidability index, the results here make a pretty clear case:
 
-pip install numpy pandas matplotlib scipy scikit-learn
-
-```
-
-Place the following files in the same directory:
-
-```
-
-assignment1.py
-biomet_data.csv
-
-```
-
-Run:
-
-```
-
-python assignment1.py
-
-```
-
-The plots and score files will automatically be generated inside:
-
-```
-
-results/
-
-```
-
-```
+> **Cosine similarity is the stronger matching criterion for this dataset.**
