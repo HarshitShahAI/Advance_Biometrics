@@ -132,6 +132,8 @@ Genuine distances average around 291.6, which is exactly what's expected — a t
 | Std | 0.010968 |
 
 Genuine cosine scores cluster tightly near 1 (mean ≈ 0.9895), with a very small standard deviation (≈ 0.011) — meaning genuine matches are consistently high-confidence across nearly all users.
+
+
 ---
 
 ## 5. Imposter Distribution
