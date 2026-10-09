@@ -84,19 +84,13 @@ there are 101 × 100 = 10,100 impostor comparisons.
 
 ## Results
 
-  --------------------------------------------------------------------------------------------------------
-  Condition            Subjects      Mean       Mean  EER (%)         EER  TAR at EER  FAR at EER      AUC
-                                  genuine   impostor            threshold   threshold   threshold 
-                                    score      score                              (%)         (%) 
-  ------------------ ---------- --------- ---------- -------- ----------- ----------- ----------- --------
-  Real_Image                101    0.7392     0.0314     0.94      0.3943       99.01        0.89   0.9998
+| Condition | Subjects | Mean genuine score | Mean impostor score | EER (%) | EER threshold | TAR at EER threshold (%) | FAR at EER threshold (%) | AUC |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| Real_Image | 101 | 0.7392 | 0.0314 | 0.94 | 0.3943 | 99.01 | 0.89 | 0.9998 |
+| Gaussian_Noise | 101 | 0.6750 | 0.0694 | 2.99 | 0.3615 | 97.03 | 3.00 | 0.9958 |
+| SaltPepper_Noise | 101 | 0.6648 | 0.0449 | 1.71 | 0.3842 | 98.02 | 1.45 | 0.9981 |
+| Synthetic_Resize | 101 | 0.6168 | 0.0453 | 4.73 | 0.3056 | 95.05 | 4.51 | 0.9949 |
 
-  Gaussian_Noise            101    0.6750     0.0694     2.99      0.3615       97.03        3.00   0.9958
-
-  SaltPepper_Noise          101    0.6648     0.0449     1.71      0.3842       98.02        1.45   0.9981
-
-  Synthetic_Resize          101    0.6168     0.0453     4.73      0.3056       95.05        4.51   0.9949
-  --------------------------------------------------------------------------------------------------------
 
 ## Interpretation
 
@@ -138,12 +132,6 @@ are in a `results/` subfolder.
 
   -------------------------------------------------------------------------------------
 
-## How to Run
-
-Open `main.ipynb` in Jupyter Notebook, JupyterLab, or Google Colab. Make
-sure the dataset is available at the path expected by the notebook,
-install the packages imported by the notebook, and run the cells in
-order.
 
 ## Limitations
 
@@ -156,7 +144,7 @@ order.
     photographs and clearly document the dataset source and
     subject-selection method.
 
-## Suggested Repository Structure
+## Repository Structure
 
 ``` text
 Advance_Biometrics/
@@ -172,6 +160,9 @@ Advance_Biometrics/
     ├── main.ipynb
     └── README.md
 ```
+## How to Run
 
-If your actual folder layout differs, update the figure links and
-structure above to match it.
+Open `main.ipynb` in Jupyter Notebook, JupyterLab, or Google Colab. Make
+sure the dataset is available at the path expected by the notebook,
+install the packages imported by the notebook, and run the cells in
+order.
