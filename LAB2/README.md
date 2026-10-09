@@ -109,8 +109,6 @@ there are 101 × 100 = 10,100 impostor comparisons.
 
 ## Figures
 
-Keep these image files alongside this README, or adjust paths if they
-are in a `results/` subfolder.
 
 ![ROC curves across conditions](results/roc_all_conditions.png)
 
