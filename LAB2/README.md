@@ -126,7 +126,7 @@ are in a `results/` subfolder.
   Real images                          Gaussian noise
   ------------------------------------ ----------------------------------------
   ![Real image score                   ![Gaussian-noise score
-  distribution](dist_Real_Image.png)   distribution](dist_Gaussian_Noise.png)
+  distribution](results/dist_Real_Image.png)   distribution](results/dist_Gaussian_Noise.png)
 
   -----------------------------------------------------------------------------
 
@@ -134,7 +134,7 @@ are in a `results/` subfolder.
   Salt-and-pepper noise                      Synthetic resize
   ------------------------------------------ ------------------------------------------
   ![Salt-and-pepper score                    ![Synthetic-resize score
-  distribution](dist_SaltPepper_Noise.png)   distribution](dist_Synthetic_Resize.png)
+  distribution](results/dist_SaltPepper_Noise.png)   distribution](results/dist_Synthetic_Resize.png)
 
   -------------------------------------------------------------------------------------
 
